@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>chats pages</title>
+<head>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
+</head>
+<body>
+  <div id="chats" v-cloak>
+    <van-nav-bar fixed :title="headTitle" left-arrow @click-left="onClickLeft"></van-nav-bar>
+    <div class="content" v-if="messageList.length">
+      <div v-for="(item,index) in messageList" :key='index'>
+        <div v-if="item.type=='USER_ENTER'" class="user_info"> <span>{{item.msgObj.name}}加入群聊</span> </div>
+        <div v-else-if="item.type=='USER_LEAVA'" class="user_info"> <span>{{item.msgObj.name}}离开群聊</span> </div>
+        <div v-else-if="item.type=='USER_MESSAGE'&&item.msgObj" class="clearfix">
+          <div v-if="item.msgObj.userId==socket.id">
+            <div class="message-right message-commo">
+              <div class="message-content">
+                <p>{{item.msgObj.time}} <span>{{item.msgObj.name}}</span></p>
+                <div v-if="item.msgObj.type=='TEXT'">{{item.msgObj.content}}</div>
+                <img v-if="item.msgObj.type=='IMAGE'" :src="item.msgObj.content" alt=""
+                  @click="previewImag(item.msgObj.content)">
+                <video v-if="item.msgObj.type=='VIDEO'" controls="controls" :src="item.msgObj.content">
+              </div>
+              <img :src="`/images/${item.msgObj.imgType}.jpg`" alt="" />
+            </div>
+          </div>
+          <div v-else>
+            <div class="message-left message-commo">
+              <img :src="`/images/${item.msgObj.imgType}.jpg`" alt="" />
+              <div class="message-content">
+                <p> <span>{{item.msgObj.name}}</span>{{item.msgObj.time}}</p>
+                <div v-if="item.msgObj.type=='TEXT'">{{item.msgObj.content}}</div>
+                <img v-if="item.msgObj.type=='IMAGE'" :src="item.msgObj.content" alt="">
+                <video v-if="item.msgObj.type=='VIDEO'" controls="controls" :src="item.msgObj.content">>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="input-block">
+        <input type="text" v-model='content' ref='contents'>
+        <van-button type="primary" size='small' @click='handleSend'> 发 送</van-button>
+        <van-button type="default" size='small' icon='plus' @click='showFile=true' style="margin-left: 5px;">文件<input
+            type="file" class="uploadImag" ref='inputer' multiple @change="getImgURL" /></van-button>
+      </div>
+    </div>
+    <van-image-preview v-model="show" :images="images">
+    </van-image-preview>
+  </div>
+  <script src="/utils/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+
+  <script>
+    window.onload = function () {
+      new Vue({
+        el: '#chats',
+        data() {
+          return {
+            room: '', //房间号
+            socket: null,
+            userName: '', //用户名
+            show: false, //预览
+            images: [],
+            messageList: [], //信息列表
+            content: '', //发送文本
+            imgType: 0, //头像的标识符
+            onlineNum: 0, //房间在线人数
+          }
+        },
+        computed: {
+          headTitle() {return `在线人数（${this.onlineNum}）`}
+        },
+        created() {
+          this.userName = getQueryString('name') //用户名
+          this.imgType = getQueryString('imgType')
+          this.roomId = getQueryString('roomId') //房间ID
+        },
+        mounted() {
+          this.socket = io({query: {name: this.userName,roomId: this.roomId}})
+          this.$_event()
+        },
+        methods: {
+          onClickLeft() {window.history.go(-1)},
+          // socket事件
+          $_event() {
+            // 客户连接成功回调
+            this.socket.on('connect', () => {console.log('已进入房间。。。')})
+            this.socket.on('SEND_ALL_USER', data => {
+            this.messageList.push(data)
+            data.userNum && (this.onlineNum = data.userNum)
+            this.$nextTick((x) => { window.scrollTo(0, 900000)})
+            }),
+                // 客户端断开连接
+            this.socket.on('disconnect', data => { console.log('断开链接。。。。') })
+          },
+          getImgURL(res) {
+            let files = this.$refs.inputer.files
+            let mp4 = files[0].type.includes('video/mp4')
+            let fileReader = new FileReader()
+            fileReader.readAsDataURL(files[0])
+            // 将图片转化为base64
+            fileReader.onload = e => {
+              this.socket.emit('CLIENT_SEND', {
+                type: mp4 ? 'VIDEO' : 'IMAGE',
+                content: e.target.result,
+                time: formaTime(),
+                imgType: this.imgType
+              }, res => {})
+            }
+          },
+          // 图片预览
+          previewImag(url) {this.show = true;this.images = [url]},
+          // 客户端发送信息
+          handleSend() {
+            if (!this.content) return vant.Toast('不能发送空数据！');
+            this.socket.emit('CLIENT_SEND', {
+              content: this.content,
+              time: formaTime(),
+              type: 'TEXT',
+              imgType: this.imgType
+            }, res => {
+              this.content = ''
+              this.$refs.contents.focus();
+            })
+          },
+        }
+      });
+    }
+  </script>
+
+</body>

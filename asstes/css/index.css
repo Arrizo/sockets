@@ -1,0 +1,170 @@
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+#app,
+#chats {
+  height: 100%;
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+  margin-top: 40%;
+  padding: 0px 20%;
+}
+
+.login p {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.login input {
+  outline: none;
+  box-sizing: border-box;
+  border: 1px solid gray;
+  color: #333333;
+  padding: 5px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.content {
+  padding: 46px 5px 44px;
+
+}
+
+.user_info {
+  text-align: center;
+  margin: 2px 0px;
+}
+
+.user_info span {
+  color: #fff;
+  font-size: 12px;
+  display: inline-block;
+  background: rgba(0, 0, 0, .2);
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  background: #f9f9f9;
+}
+
+.input-block {
+  display: flex;
+  padding: 7px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.input-block input {
+  flex: 1;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  padding: 5px 8px;
+  margin-right: 5px;
+}
+
+.message-commo {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0px;
+}
+
+.message-commo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.message-content p {
+  color: gray;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.message-content img {
+  width: 100px;
+  height: 100px;
+}
+
+.message-content video {
+  width: 130px;
+  height: 130px;
+}
+
+.message-content div {
+  border-radius: 5px;
+  padding: 5px;
+  word-break: break-all;
+  display: inline-block;
+}
+
+.message-right {
+  float: right;
+}
+
+.message-right img {
+  margin-left: 5px;
+}
+
+.message-right .message-content div {
+  background-color: #73b9ff;
+  float: right;
+}
+
+.message-right .message-content p {
+  text-align: right;
+}
+
+.message-right .message-content p span {
+  margin-left: 5px;
+}
+
+.message-left .message-content p span {
+  margin-right: 5px;
+}
+
+.message-left .message-content div {
+  background-color: #d4d4d4;
+  float: left
+}
+
+.message-left {
+  float: left;
+}
+
+.message-left img {
+  margin-right: 5px;
+}
+
+.uploadImag {
+  opacity: 0;
+  position: absolute;
+  width: 42px;
+  right: 0px;
+  z-index: 999;
+  top: 0px;
+}

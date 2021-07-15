@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>test pages</title>
+
+<head>
+</head>
+
+<body>
+  <div id="test"  v-cloak>
+    <div class="login">
+            <div>房间号：<input type="text" v-model='roomId'> <button @click='enter'>进入</button> <button @click='leave'>离开</button> </div>
+            <textarea name="" v-model='content' id="" cols="30" rows="10" readonly></textarea>
+            <div> 内容： <input type="text" v-model='value'placeholder='请输入内容' /></div>
+            <div> 当前发送者接收到<button @click='sendMsg(0)'>发送</button>   </div>
+            <div> 发送给所有客户端（除了发送方）<button @click='sendMsg(1)'>发送</button>   </div>
+            <div> 发送所有客户端<button @click='sendMsg(2)'>发送</button>   </div>
+            <div> 发送所有房间收到（除了发送方）<button @click='sendMsg(4)'>发送</button>   </div>
+            <div> 发送房间所有客户端<button @click='sendMsg(5)'>发送</button>   </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+  <script>
+    window.onload = function () {
+      new Vue({
+        el: '#test',
+        data() {
+            return{
+            userName:'',
+            roomId:'',
+            content:'',
+            value:''
+        }
+    },
+        mounted(){
+            this.socket = io('/test')
+            this.socket.on('connect', () => {console.log('已进入房间。。。')})
+            this.socket.on('sendClient',data=>{
+                this.content+=`${data.content}\r\n`
+                this.value=''
+            })
+            
+        },
+        methods: {
+            sendMsg(type){
+                this.socket.emit('senderEvent',{type:type,content:this.value})
+            },
+            enter(){
+                this.socket.emit('joinRoom',{roomId:this.roomId})
+            },
+            leave(){
+                this.socket.emit('leaveRoom',{roomId:this.roomId})
+            }
+        }
+      });
+    }
+  </script>
+
+</body>

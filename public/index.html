@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>login pages</title>
+
+<head>
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
+</head>
+
+<body>
+  <div id="app"  v-cloak>
+    <div class="login">
+      <p>用户登录</p>
+      <van-image round width="100px" height="100px" :src="`/images/${imgType}.jpg`" style="margin-bottom: 10px;">
+      </van-image>
+      <input type="text" v-model='userName' placeholder="请输入用户名" />
+      <input type="number" v-model='roomId' placeholder="请输入房间号" />
+      <van-button type="info" @click='login' block size='small'>加  入</van-button>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+  <script src="/utils/index.js"></script>
+  <script>
+    window.onload = function () {
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            roomId:'',
+            userName: '', //输入的用户名
+            imgType: 0 //本地图片标识符
+          }
+        },
+        created() {
+          this.imgType = random()
+        },
+        methods: {
+          login() {
+            if (!this.userName.trim()) return vant.Toast('请输入用户名！');
+            if (!this.roomId.trim()) return vant.Toast('请填写房间号！');
+            location.href = `/chats?name=${this.userName}&imgType=${this.imgType}&roomId=${this.roomId}`
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
