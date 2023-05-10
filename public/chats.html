@@ -8,8 +8,6 @@
 </head>
 <body>
   <div id="chats" v-cloak>
-    <div></div>
-    dd
     <van-nav-bar fixed :title="headTitle" left-arrow @click-left="onClickLeft"></van-nav-bar>
     <div class="content" v-if="messageList.length">
       <div v-for="(item,index) in messageList" :key='index'>
