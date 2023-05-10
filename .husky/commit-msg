@@ -1,0 +1,12 @@
+###
+ # @Author: chenzechao
+ # @Date: 2023-05-10 22:49:23
+ # @LastEditTime: 2023-05-10 22:49:41
+ # @LastEditors: chenzechao
+ # @Description: 
+ # @FilePath: /sockets/.husky/commit-msg
+### 
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm exec commitlint --edit $1

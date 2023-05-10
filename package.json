@@ -16,7 +16,8 @@
   "devDependencies": {
     "commitlint-config-cz": "^0.13.3",
     "cz-conventional-changelog": "^3.3.0",
-    "cz-customizable": "^7.0.0"
+    "cz-customizable": "^7.0.0",
+    "husky": "^8.0.3"
   },
   "config": {
     "commitizen": {
